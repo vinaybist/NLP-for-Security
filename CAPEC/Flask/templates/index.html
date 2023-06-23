@@ -1,1 +1,86 @@
-index.html
+<hr></hr>
+<h2>CVE to CAPEC Mapping</h2>
+<hr></hr>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE to CAPEC Mapping</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/static/css/main.css">
+	<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+</head>
+
+<body>
+<form id='cvecapec' method="post" action="/index.html">
+    <div class="container">
+        <div id="content" style="margin-top:1em">
+			<table border=1>
+					<tr>
+					<td>
+						<label class="cve-label">
+							Enter CVE ID
+						</label>
+						<input type="text" name="cve_text" id="cve_text">
+					</td>
+					</tr>
+					<tr>
+						<td>
+						<div class="capec-section">
+							<div>
+								<button type="button" onclick="performPost()" class="btn btn-lg " id="btn-predict">Predict CAPEC Ids</button>
+							</div>
+							<div class="text-preview">
+								<div id="cvePreview">
+								
+								</div>
+							</div>
+
+						</div>
+						</td>
+						<td>
+						<div class="loader" style="display:none;"></div>
+						<h1 id="result" style="color:Tomato;">
+							<span> </span>
+						</h1>
+						</td>
+					</tr>
+			  </table>
+		</div>
+    </div>
+						</form>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script>
+    function performPost() {
+		cve_text = document.getElementById("cve_text").value;
+		if (!cve_text)
+			alert('Provide Input Please')
+		//var form_data1 = new FormData(cve_text);
+		console.log('>>>>>>>>>>>>>>>>>> cve_text ==> ',cve_text);
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('predict') }}",
+            data: {"name" : cve_text},
+			success: function (data) {
+                // Get and display the result
+				console.log('Response = ',data);
+                $('#result').text(data);
+				$('#cvePreview').text(data);
+                console.log('Success!');
+            },
+        })
+    }
+	
+	// disable enter submit
+	document.getElementById("cvecapec").onkeypress = function(e) {
+	  var key = e.charCode || e.keyCode || 0;     
+	  if (key == 13) {
+		e.preventDefault();
+	  }
+	}	
+	
+</script>
