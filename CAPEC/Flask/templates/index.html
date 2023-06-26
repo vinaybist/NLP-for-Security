@@ -67,7 +67,8 @@
     function performPost() {
 		cve_text = document.getElementById("cve_text").value;
 		if (!cve_text)
-			alert('Provide Input Please')
+			alert('Please provide input as CVE ID')
+			return false;
 		//var form_data1 = new FormData(cve_text);
 		console.log('>>>>>>>>>>>>>>>>>> cve_text ==> ',cve_text);
         $.ajax({
