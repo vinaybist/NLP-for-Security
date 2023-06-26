@@ -17,7 +17,7 @@
 <form id='cvecapec' method="post" action="/index.html">
     <div class="container">
         <div id="content" style="margin-top:1em">
-			<table border=1>
+			<table border=0>
 					<tr>
 					<td>
 						<label class="cve-label">
@@ -34,7 +34,7 @@
 							</div>
 							<div class="text-preview">
 								<div id="cvePreview">
-								
+
 								</div>
 							</div>
 
@@ -54,6 +54,15 @@
 
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script>
+        let list = document.getElementById("cvePreview");
+        for (i = 0; i < result.length; ++i) {
+            var li = document.createElement('li');
+            li.innerText = result[i];
+            list.appendChild(li);
+        }
+</script>
 <script>
     function performPost() {
 		cve_text = document.getElementById("cve_text").value;
