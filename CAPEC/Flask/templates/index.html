@@ -1,77 +1,93 @@
-<hr/>
+<hr></hr>
 <h2>CVE to CAPEC Mapping</h2>
-<hr/>
+<hr></hr>
 <head>
-	<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>CVE to CAPEC Mapping</title>
-			<link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-				<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"/>
-				<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"/>
-				<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"/>
-				<link rel="stylesheet" href="/static/css/main.css">
-					<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"/>
-				</head>
-				<div id="wrapper">
-					<body>
-						<form id='cvecapec' method="post" action="/index.html">
-							<div class="container">
-								<div id="content" style="margin-top:1em">
-									<table border=0>
-									<tr>
-										<td align="center">
-											<label class="cve-label">
-												Enter CVE ID
-											</label>
-										</td>
-										<td align="center">
-											<input type="text" name="cve_text" id="cve_text">
-										</td>
-										</tr>
-										<tr>
-											<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
-										</tr>
-									</table>
-									<table border=0>
-									<tr>
-										<div class="capec-section">
-											<div>
-												<button type="button" onclick="performPost()" class="btn btn-lg btn-block" id="btn-predict">Predict CAPEC Ids</button>
-											</div>
-										</div>
-									</tr>
-								</table>
-								<table border=0>
-								<tr>
-									<td>
-										<div>
-											<div id="cvePreview">
-												<a href='#$(cvePreview)'/>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-							<table border=0>
-							<tr>
-								<td>
-									<h1 id="result" style="color:Tomato;">
-										<span> </span>
-									</h1>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</form>
-		</body>
-	</div>
-	<script src="https://code.jquery.com/jquery-3.6.0.js"/>
-	<script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE to CAPEC Mapping</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/static/css/main.css">
+	<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+</head>
+<div id="wrapper">
+<body>
+<form id='cvecapec' method="post">
+    <div class="container">
+        <div id="content" style="margin-top:1em">
+			<table border=0>
+					<tr>
+					<td align="center">
+						<label class="cve-label">
+							Enter CVE ID
+						</label>
+						
+					</td>
+					<td align="center">
+						<input type="text" name="cve_text" id="cve_text">
+					</td>
+					</tr>
+					<tr>
+						
+					<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
+					</tr>
+
+			  </table>
+			  <table border=0>
+			  		<tr>
+						<div class="capec-section">
+							<div>
+								<button type="button" onclick="performPost()" class="btn btn-lg btn-block" id="btn-predict">Predict CAPEC Ids</button>
+							</div>
+						</div>
+					</tr>
+			  </table>
+			  <p>
+			  
+			  </p>			  
+			  <table border=0>
+				<tr>
+					<td>
+						<div>
+							<div id="cvePreview">
+							<a href='#$(cvePreview)'></a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			  </table>
+			  <p>
+			  
+			  </p>
+			  <table border=0>
+				<tr>
+					<td>
+						
+						<h1 id="result" style="color:Tomato;">
+							<span> </span>
+						</h1>
+					</td>
+				</tr>
+			  </table>			  
+		</div>
+    </div>
+	</form>
+</body>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script>
         let list = document.getElementById("cvePreview");
-        for (i = 0; i < result.length; ++i) { var li=document.createElement('li' ); li.innerText=result[i]; list.appendChild(li); }
-	</script>
-	<script>
+        for (i = 0; i < result.length; ++i) {
+            var li = document.createElement('li');
+            li.innerText = result[i];
+            list.appendChild(li);
+        }
+</script>
+<script>
     function performPost() {
 		cve_text = document.getElementById("cve_text").value;
 		if (!cve_text)
