@@ -26,9 +26,15 @@
     cursor: pointer;
 }
 
+
+
 .cve-label:hover{
     background: #34495E;
     color: #39D2B4;
 }
 
-
+.wrapper>div {
+    margin-left:auto;
+    margin-right:auto;
+    width:960px;
+}
