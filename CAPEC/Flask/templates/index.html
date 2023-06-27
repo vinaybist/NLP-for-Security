@@ -12,47 +12,71 @@
 	<link rel="stylesheet" href="/static/css/main.css">
 	<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
 </head>
-
+<div id="wrapper">
 <body>
 <form id='cvecapec' method="post" action="/index.html">
     <div class="container">
         <div id="content" style="margin-top:1em">
 			<table border=0>
 					<tr>
-					<td>
+					<td align="center">
 						<label class="cve-label">
 							Enter CVE ID
 						</label>
+						
+					</td>
+					<td align="center">
 						<input type="text" name="cve_text" id="cve_text">
 					</td>
 					</tr>
 					<tr>
-						<td>
+						
+					<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
+					</tr>
+
+			  </table>
+			  <table border=0>
+			  		<tr>
 						<div class="capec-section">
 							<div>
-								<button type="button" onclick="performPost()" class="btn btn-lg " id="btn-predict">Predict CAPEC Ids</button>
+								<button type="button" onclick="performPost()" class="btn btn-lg btn-block" id="btn-predict">Predict CAPEC Ids</button>
 							</div>
-							<div class="text-preview">
-								<div id="cvePreview">
-
-								</div>
-							</div>
-
 						</div>
-						</td>
-						<td>
-						<div class="loader" style="display:none;"></div>
+					</tr>
+			  </table>
+			  <p>
+			  
+			  </p>			  
+			  <table border=0>
+				<tr>
+					<td>
+						<div>
+							<div id="cvePreview">
+							<a href='#$(cvePreview)'></a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			  </table>
+			  <p>
+			  
+			  </p>
+			  <table border=0>
+				<tr>
+					<td>
+						
 						<h1 id="result" style="color:Tomato;">
 							<span> </span>
 						</h1>
-						</td>
-					</tr>
-			  </table>
+					</td>
+				</tr>
+			  </table>			  
 		</div>
     </div>
-						</form>
-
+	</form>
 </body>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
 <script>
@@ -76,11 +100,14 @@
             type: "POST",
             url: "{{ url_for('predict') }}",
             data: {"name" : cve_text},
-			success: function (data) {
+			success: function (response) {
                 // Get and display the result
-				console.log('Response = ',data);
-                $('#result').text(data);
-				$('#cvePreview').text(data);
+				console.log('Response = ',response);
+                $('#result').text("Related Attack Techniques -> "+ response);
+				//cve_desc = "<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name='>Link</a>"
+				cve_desc = "CVE Detail - "+"<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name="+cve_text+"'>"+cve_text+"</a>"
+				//"D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
+				$('#cvePreview').html(cve_desc);
                 console.log('Success!');
             },
         })
