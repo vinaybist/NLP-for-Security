@@ -19,22 +19,33 @@
         <div id="content" style="margin-top:1em">
 			<table border=0>
 					<tr>
+						<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
+					</tr>			
+					<tr>
 					<td align="center">
 						<label class="cve-label">
 							Enter CVE ID
 						</label>
-						
 					</td>
 					<td align="center">
 						<input type="text" name="cve_text" id="cve_text">
 					</td>
+					<!--<td align="center">
+						<input type="checkbox" name="cve_desc" id="cve_desc" onclick="checkFunction()">
+						<label>
+							Use description instead of CVE ID
+						</label>
+					</td>		-->			
 					</tr>
-					<tr>
-						
-					<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
-					</tr>
-
 			  </table>
+			  <!--<table border=1>
+			  <tr>
+			  <td>
+				<textarea name="textarea" rows="5" cols="90" id= "cve_desc_area" style= "display:none">Paste CVE description here</textarea>
+			  </td>
+			  </tr>
+			  </table>-->
+			  <br>
 			  <table border=0>
 			  		<tr>
 						<div class="capec-section">
@@ -47,7 +58,7 @@
 			  <p>
 			  
 			  </p>			  
-			  <table border=0>
+			  <table border=1>
 				<tr>
 					<td>
 						<div>
@@ -58,19 +69,11 @@
 					</td>
 				</tr>
 			  </table>
-			  <p>
-			  
-			  </p>
-			  <table border=0>
-				<tr>
-					<td>
-						
-						<h1 id="result" style="color:Tomato;">
-							<span> </span>
-						</h1>
-					</td>
-				</tr>
-			  </table>			  
+			  <br>
+			  <table id="result" style='font-family:"Courier New", Courier, monospace; font-size:200%' border=1">
+				<span> </span>
+			  </table>
+			  	  
 		</div>
     </div>
 	</form>
@@ -79,38 +82,48 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
+
 <script>
-        let list = document.getElementById("cvePreview");
-        for (i = 0; i < result.length; ++i) {
-            var li = document.createElement('li');
-            li.innerText = result[i];
-            list.appendChild(li);
-        }
+/*function checkFunction(){
+	 if (cve_desc.checked == true){
+	 cve_desc_area.style.display = "block";   
+	 document.getElementById("cve_text").style.display = "none";	 
+	}
+	else if (cve_desc.checked == false){
+     cve_desc_area.style.display = "none";   
+	 document.getElementById("cve_text").style.display = "block";	
+	}
+}*/
 </script>
 <script>
     function performPost() {
 		cve_text = document.getElementById("cve_text").value;
-		if (!cve_text)
-			 return {
-					  error: true,
-					  message: 'Parameter needed'
-					}
+		if (cve_text == ""){
+		alert('Parameter needed');
+			 return false;
+		}
+		else{
+		
+		
 		console.log('>>>>>>>>>>>>>>>>>> cve_text ==> ',cve_text);
         $.ajax({
             type: "POST",
             url: "{{ url_for('predict') }}",
-            data: {"name" : cve_text},
+            //data: {"name" : cve_text, "desc": cve_desc},
+			data: {"name" : cve_text},
 			success: function (response) {
                 // Get and display the result
 				console.log('Response = ',response);
-                $('#result').text("Related Attack Techniques -> "+ response);
+                $('#result').html(response);
 				//cve_desc = "<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name='>Link</a>"
-				cve_desc = "CVE Detail - "+"<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name="+cve_text+"'>"+cve_text+"</a>"
+				cve_desc = "Input CVE - "+"<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name="+cve_text+"'>"+cve_text+"</a>"
 				//"D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
 				$('#cvePreview').html(cve_desc);
                 console.log('Success!');
             },
         })
+		
+		}
     }
 	
 	// disable enter submit
