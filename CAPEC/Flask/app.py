@@ -12,10 +12,11 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 
+#initialization of constants
+CVE_SAMPLE = "D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
 
 def fetch_cve_details(cve_id):
     url = f"https://cve.mitre.o1rg/cgi-bin/cvename.cgi?name={cve_id}"
-    print("Inside fetch_cve_details...")
     try:
         print("Inside fetch_cve_details...")
         response = requests.get(url)
@@ -76,9 +77,13 @@ def cve_processing_test(cve):
     list_sample = ["a","b","c","d"];
     return list_sample;
 
+def create_dict_file(dict):
+    with open('capec_dict.json', 'w') as convert_file:
+     convert_file.write(json.dumps(dict))
+
 
 def cve_processing(cve):
-
+    Input_CVE = CVE_SAMPLE
     try:    
         print("Inside python logic of cosine similarity = ",cve)
         capec_data_uri = "./id_desc.csv"
@@ -89,9 +94,12 @@ def cve_processing(cve):
         capec_data = capec_data.reset_index(drop=True)
         print("Sorting the dataframe")
         capec_data['ID'] = "CAPEC-"+capec_data['ID'].apply(str)
-        dict_of_capecs = capec_data.set_index('ID').to_dict()['Description']
         print("Creating dict of capecs")
-        Input_CVE = fetch_cve_details(cve)['Description'] 
+        dict_of_capecs = capec_data.set_index('ID').to_dict()['Description']
+        #create_dict_file(dict_of_capecs);
+        print("dict of capecs saved as jason file")
+        if cve != "CVE-2018-18442":
+            Input_CVE = fetch_cve_details(cve)['Description'] 
         #Input_CVE = "D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
         print("Input_CVE ===> ",Input_CVE)
         if Input_CVE is None:
@@ -101,7 +109,12 @@ def cve_processing(cve):
         corpus_keys = list(dict_of_corpus.keys())
         print("Loading the model...")
         model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
-        print("Loading the model - Done")
+        saved_model_path = "./model"
+        tf.saved_model.save(model, saved_model_path)
+        # Load the TF Hub model from custom folder path
+        #model = hub.load(saved_model_path)
+        print("Loading the model - Done",model)
+        
         sent_list_1 = list(dict_of_corpus.values())
         ls_dict_of_capecs_1 = list(dict_of_corpus.keys())
         print(type(ls_dict_of_capecs_1))
