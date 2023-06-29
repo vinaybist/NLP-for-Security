@@ -30,12 +30,12 @@
 					<td align="center">
 						<input type="text" name="cve_text" id="cve_text">
 					</td>
-					<!--<td align="center">
+					<td align="center">
 						<input type="checkbox" name="cve_desc" id="cve_desc" onclick="checkFunction()">
 						<label>
-							Use description instead of CVE ID
+							Try Demo Example instead
 						</label>
-					</td>		-->			
+					</td>				
 					</tr>
 			  </table>
 			  <!--<table border=1>
@@ -58,10 +58,12 @@
 			  <p>
 			  
 			  </p>			  
-			  <table border=1>
+			  <table border=0>
 				<tr>
 					<td>
 						<div>
+							<div id="msg">
+							</div>
 							<div id="cvePreview">
 							<a href='#$(cvePreview)'></a>
 							</div>
@@ -70,7 +72,7 @@
 				</tr>
 			  </table>
 			  <br>
-			  <table id="result" style='font-family:"Courier New", Courier, monospace; font-size:200%' border=1">
+			  <table id="result" style='font-family:"Courier New", Courier, monospace; font-size:130%' border=1">
 				<span> </span>
 			  </table>
 			  	  
@@ -94,6 +96,22 @@
 	 document.getElementById("cve_text").style.display = "block";	
 	}
 }*/
+
+function checkFunction(){
+
+	//alert(cve_desc.checked == true);
+	if (cve_desc.checked == true){
+	 document.getElementById("cve_text").value = "CVE-2018-18442";	 
+	}
+	else if (cve_desc.checked == false){
+	//alert("el if");
+	 document.getElementById("cve_text").value = "";	
+	}
+	else{
+	//alert(cve_desc.checked == true);
+	 document.getElementById("cve_text").value = "";
+	}
+}
 </script>
 <script>
     function performPost() {
@@ -104,7 +122,10 @@
 		}
 		else{
 		
-		
+		//$("#loader").css("display","block");
+		$('#result').text("")
+		$('#cvePreview').text("")
+		$('#msg').text("Predicting attack techniques. Please Wait....");
 		console.log('>>>>>>>>>>>>>>>>>> cve_text ==> ',cve_text);
         $.ajax({
             type: "POST",
@@ -119,6 +140,8 @@
 				cve_desc = "Input CVE - "+"<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name="+cve_text+"'>"+cve_text+"</a>"
 				//"D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
 				$('#cvePreview').html(cve_desc);
+				//$("#loader").css("display","none");
+				$('#msg').text("");
                 console.log('Success!');
             },
         })
