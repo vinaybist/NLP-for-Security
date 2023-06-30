@@ -144,7 +144,16 @@ function checkFunction(){
 				$('#msg').text("");
                 console.log('Success!');
             },
-        
+/*        error: function() {
+            $response.html("Sorry, but the request could not reach its destination. Try again later.'");
+        }*/
+                // then throw error message
+                error: function(xhr, textStatus, errorThrown) {
+  
+                    if (textStatus == 'timeout') {
+                        $("#msg").html("Error : Timeout for this call!");
+                    }
+                }		
 	timeout: 10000 
 	})
 		
