@@ -1,4 +1,4 @@
-#script to read csv of two column and create dictionary of col1 as key and col2 as value
+# FOR TESTING USE ONLY ******************
 
 import csv
 import pickle 
