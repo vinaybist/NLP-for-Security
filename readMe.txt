@@ -13,7 +13,7 @@ os.environ["tf_gpu_allocator"]="cuda_malloc_async"
 Steps:
 Git Clone
 cd /NLP
-Disable the local firewall (secure it via EC2 and IAM policies)
+Disable the local firewall (secure it via EC2 and IAM policies)  (check status via sudo ufw status)
 sudo apt install python3-pip
 sudo apt install python3.10-venv
 Create a python env as cve -==> python3 -m venv cve
