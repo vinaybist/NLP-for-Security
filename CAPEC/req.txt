@@ -1,0 +1,9 @@
+pip install Flask
+pip install pandas
+pip install scimitar-learn
+pip install jsonpickle
+pip install requests
+pip install BeautifulSoup4
+pip install tensorflow
+pip install tensorflow_hub
+pip install sentencepiece
