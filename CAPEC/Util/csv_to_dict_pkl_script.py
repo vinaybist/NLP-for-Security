@@ -1,4 +1,5 @@
-#script to read csv of two column and create dictionary of col1 as key and col2 as value
+#script to read csv of two column and create dictionary of col1 as key and col2 as value 
+# ***NOTE This is modified for CAPEC use only. (Not a generic one. If need generic then use the other script****
 
 import csv
 import pickle 
