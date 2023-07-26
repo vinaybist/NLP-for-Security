@@ -231,7 +231,75 @@ def predict():
         tbl_tag = "<tr><th bgcolor='#009879'>Related Attack Techniques&nbsp;&nbsp;</th></tr>"+tbl_tag
         return jsonpickle.encode(tbl_tag)
 
+def getcapecs_with_score(cve):
+    Input_CVE = CVE_SAMPLE
+    try:    
+        print("Inside python logic of cosine similarity = ",cve)
+        capec_data_uri = "./id_desc.csv"
+        capec_data = pd.read_csv(capec_data_uri, encoding='utf-8')
+        print(type(capec_data))
+        capec_data = capec_data.dropna()
+        capec_data = capec_data.sort_values(by=['ID'], ascending=True)
+        capec_data = capec_data.reset_index(drop=True)
+        print("Sorting the dataframe")
+        capec_data['ID'] = "CAPEC-"+capec_data['ID'].apply(str)
+        print("Creating dict of capecs")
+        dict_of_capecs = capec_data.set_index('ID').to_dict()['Description']
+        create_dict_file(dict_of_capecs);
+        print("dict of capecs saved as jason file")
+        if cve != "CVE-2018-18442":
+            Input_CVE = fetch_cve_details(cve)['Description'] 
+        print("Input_CVE ===> ",Input_CVE)
+        if Input_CVE is None:
+            return "Error Occured while cve_processing"
+        Input_doc_dict = {'input_doc':Input_CVE}
+        dict_of_corpus = {**dict_of_capecs, **Input_doc_dict}
+        corpus_keys = list(dict_of_corpus.keys())
+        print("Loading the model...")
+        #model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+        saved_model_path = "./model"
+        #tf.saved_model.save(model, saved_model_path)
+        # Load the TF Hub model from custom folder path
+        model = hub.load(saved_model_path)
+        print("Loading the model - Done",model)
+        
+        sent_list_1 = list(dict_of_corpus.values())
+        ls_dict_of_capecs_1 = list(dict_of_corpus.keys())
+        print(type(ls_dict_of_capecs_1))
+        dicts_vec_1 = sent_embedings(sent_list_1, model)
+        final_dict_vec_1 = {ls_dict_of_capecs_1[i]: dicts_vec_1[i] for i in range(len(ls_dict_of_capecs_1))}
+        cs1_1 = cosine_similarity([final_dict_vec_1['input_doc']], list(final_dict_vec_1.values()))
+        print("Got the similarity scores")
+        df1_1 = pd.DataFrame(cs1_1, columns =corpus_keys)
+        print("==========================> \n",df1_1.head(1))
+        response_dict_1 = df1_1.to_dict('index')[0]
+        print("response_dict_1 ==========================> \n",response_dict_1)
+        
+        sorted_CAPEC_by_maximum_similarity_1 = sorted(response_dict_1.items(), reverse=True, key=lambda x:x[1])
+        sorted_CAPEC_by_maximum_similarity_1
+        print("Sort the list - based on maximum similarity ",sorted_CAPEC_by_maximum_similarity_1)
+        result_json_dict = dict(sorted_CAPEC_by_maximum_similarity_1[1:10])
+        return_capec_list = [i[0] for i in sorted_CAPEC_by_maximum_similarity_1[1:10]]
+        print("returning the ",type(return_capec_list))
+        #return ', '.join(return_capec_list)
+        #return return_capec_list
+        #json.dumps(data, indent=4)
+        return result_json_dict
+    except Exception as e:
+        print(f"Error Occured while cve_processing- ,{e}")
+        return "Error Occured while cve_processing";    
 
+@app.route('/capecs/<string:name>/')
+def get_capecs(name):
+    if request.method == 'GET':
+        result = getcapecs_with_score(name)
+        print("=======> ",result)
+        if "Error Occured while cve_processing" in result:
+            result = "Error Occured, Please try again";
+        else:
+            print("No Error block!")
+            return jsonpickle.encode(result)      
+    return jsonpickle.encode(result)
 
 
 if __name__ == '__main__':
