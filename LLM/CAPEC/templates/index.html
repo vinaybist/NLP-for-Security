@@ -1,0 +1,171 @@
+<hr></hr>
+<h2>CVE to CAPEC Mapping</h2>
+<hr></hr>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE to CAPEC Mapping</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/static/css/main.css">
+	<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+</head>
+<div id="wrapper">
+<body>
+<form id='cvecapec' method="post">
+    <div class="container">
+        <div id="content" style="margin-top:1em">
+			<table border=0>
+					<tr>
+						<p>Track down the CAPEC Attack Patterns from a given CVE Vulnerability</p>
+					</tr>			
+					<tr>
+					<td align="center">
+						<label class="cve-label">
+							Enter CVE ID
+						</label>
+					</td>
+					<td align="center">
+						<input type="text" name="cve_text" id="cve_text">
+					</td>
+					<td align="center">
+						<input type="checkbox" name="cve_desc" id="cve_desc" onclick="checkFunction()">
+						<label>
+							Try Demo Example instead
+						</label>
+					</td>				
+					</tr>
+			  </table>
+			  <!--<table border=1>
+			  <tr>
+			  <td>
+				<textarea name="textarea" rows="5" cols="90" id= "cve_desc_area" style= "display:none">Paste CVE description here</textarea>
+			  </td>
+			  </tr>
+			  </table>-->
+			  <br>
+			  <table border=0>
+			  		<tr>
+						<div class="capec-section">
+							<div>
+								<button type="button" onclick="performPost()" class="btn btn-lg btn-block" id="btn-predict">Predict CAPEC Ids</button>
+							</div>
+						</div>
+					</tr>
+			  </table>
+			  <p>
+			  
+			  </p>			  
+			  <table border=0>
+				<tr>
+					<td>
+						<div>
+							<div id="msg">
+							</div>
+							<div id="cvePreview">
+							<a href='#$(cvePreview)'></a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			  </table>
+			  <br>
+			  <table id="result" style='font-family:"Courier New", Courier, monospace; font-size:130%' border=1">
+				<span> </span>
+			  </table>
+			  	  
+		</div>
+    </div>
+	</form>
+</body>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+
+<script>
+/*function checkFunction(){
+	 if (cve_desc.checked == true){
+	 cve_desc_area.style.display = "block";   
+	 document.getElementById("cve_text").style.display = "none";	 
+	}
+	else if (cve_desc.checked == false){
+     cve_desc_area.style.display = "none";   
+	 document.getElementById("cve_text").style.display = "block";	
+	}
+}*/
+
+function checkFunction(){
+
+	//alert(cve_desc.checked == true);
+	if (cve_desc.checked == true){
+	 document.getElementById("cve_text").value = "CVE-2018-18442";	 
+	}
+	else if (cve_desc.checked == false){
+	//alert("el if");
+	 document.getElementById("cve_text").value = "";	
+	}
+	else{
+	//alert(cve_desc.checked == true);
+	 document.getElementById("cve_text").value = "";
+	}
+}
+</script>
+<script>
+    function performPost() {
+		cve_text = document.getElementById("cve_text").value;
+		if (cve_text == ""){
+		alert('Parameter needed');
+			 return false;
+		}
+		else{
+		
+		//$("#loader").css("display","block");
+		$('#result').text("")
+		$('#cvePreview').text("")
+		//$('#msg').text("Predicting attack techniques. Please Wait....");
+                $('#msg').html("<img src='https://i.stack.imgur.com/SBv4T.gif' alt='this slowpoke moves'  width='110'/>");
+
+
+		console.log('>>>>>>>>>>>>>>>>>> cve_text ==> ',cve_text);
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('predict') }}",
+            //data: {"name" : cve_text, "desc": cve_desc},
+			data: {"name" : cve_text},
+			success: function (response) {
+                // Get and display the result
+				console.log('Response = ',response);
+                $('#result').html(response);
+				//cve_desc = "<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name='>Link</a>"
+				cve_desc = "Input CVE - "+"<a href='https://cve.mitre.org/cgi-bin/cvename.cgi?name="+cve_text+"'>"+cve_text+"</a>"
+				//"D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
+				$('#cvePreview').html(cve_desc);
+				//$("#loader").css("display","none");
+				$('#msg').text("");
+                console.log('Success!');
+            },
+			timeout: 120000,
+			// then throw error message
+			error: function(xhr, textStatus, errorThrown) {
+
+				if (textStatus == 'timeout') {
+					$("#msg").html("<p style='color:red'>Sorry, but the request could not reach its destination. Try again later.!</p>");
+				}
+			}	
+        })
+		
+		}
+    }
+	
+	// disable enter submit
+	document.getElementById("cvecapec").onkeypress = function(e) {
+	  var key = e.charCode || e.keyCode || 0;     
+	  if (key == 13) {
+		e.preventDefault();
+	  }
+	}	
+	
+</script>
