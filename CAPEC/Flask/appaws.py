@@ -22,6 +22,7 @@ app = Flask(__name__)
 
 
 #initialization of constants
+app.json.sort_keys = False
 CVE_SAMPLE = "D-Link DCS-825L devices with firmware 1.08 do not employ a suitable mechanism to prevent denial-of-service (DoS) attacks. An attacker can harm the device availability (i.e., live-online video/audio streaming) by using the hping3 tool to perform an IPv4 flood attack. Verified attacks includes SYN flooding, UDP flooding, ICMP flooding, and SYN-ACK flooding.";
 DUMPED_CVE_FILE_NAME = "cve_dict.pkl" 
 DUMPED_CAPEC_FILE_NAME = "capec_dict.pkl" 
