@@ -1,5 +1,5 @@
 2 things:
-1. M.S. assignment Project
+1. M.S. assignment
 2. CVE to CAPEC mapping
 
 
